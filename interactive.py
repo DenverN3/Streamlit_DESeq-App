@@ -156,15 +156,24 @@ with tab2:
         st.plotly_chart(fig, use_container_width=True)
 
         # Volcano Plot
-        st.subheader("🌋 Volcano Plot")
+        # Create volcano plot
         fig = px.scatter(
             results,
             x="Log2FoldChange",
             y=-np.log10(results["pvalue"]),
-            color=results["FDR"] <= fdr_cutoff,
+            color="Significance",
+            color_discrete_map={
+                "Significant (FDR ≤ 0.05)": "red",
+                "Nominal (p < 0.05, FDR > 0.05)": "blue",
+                "Non-significant": "gray"
+            },
             hover_name="Gene",
-            title="Volcano Plot with Hover Functionality"
+            title="Volcano Plot with Significance Categories"
         )
+
+        fig.update_traces(marker=dict(size=5))
+        fig.update_layout(legend=dict(title="Gene Significance"))
+
         st.plotly_chart(fig, use_container_width=True)
 
         # Results Table
